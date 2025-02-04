@@ -1,34 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { ClassroomService } from './classroom.service';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { UpdateClassroomDto } from './dto/update-classroom.dto';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
-@Controller('classroom')
+@ApiBearerAuth()
+@ApiTags('Classrooms')
+@Controller('classrooms')
 export class ClassroomController {
   constructor(private readonly classroomService: ClassroomService) {}
 
   @Post()
-  create(@Body() createClassroomDto: CreateClassroomDto) {
+  @ApiOperation({ summary: 'Créer une salle' })
+  async create(@Body() createClassroomDto: CreateClassroomDto) {
     return this.classroomService.create(createClassroomDto);
   }
 
   @Get()
-  findAll() {
+  @ApiOperation({ summary: 'Lister toutes les salles' })
+  async findAll() {
     return this.classroomService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @ApiOperation({ summary: 'Obtenir une salle par ID' })
+  async findOne(@Param('id') id: string) {
     return this.classroomService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateClassroomDto: UpdateClassroomDto) {
+  @Put(':id')
+  @ApiOperation({ summary: 'Modifier une salle' })
+  async update(
+    @Param('id') id: string,
+    @Body() updateClassroomDto: UpdateClassroomDto,
+  ) {
     return this.classroomService.update(+id, updateClassroomDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @ApiOperation({ summary: 'Supprimer une salle' })
+  async remove(@Param('id') id: string) {
     return this.classroomService.remove(+id);
   }
 }
