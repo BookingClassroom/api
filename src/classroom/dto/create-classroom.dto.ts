@@ -10,19 +10,18 @@ import {
 export class CreateClassroomDto {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: 'Salle B202', description: 'Nom de la salle' })
+  @ApiProperty({ default: 'Classroom name'})
   name: string;
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty({ example: 30, description: 'Capacité de la salle' })
+  @ApiProperty({ default: 30})
   capacity: number;
 
   @IsArray()
   @IsOptional()
   @ApiProperty({
-    example: ['Tableau blanc', 'Vidéo projecteur'],
-    description: 'Équipements disponibles',
+    default: ['Tableau blanc', 'Vidéo projecteur'],
     required: false,
   })
   equipments?: string[];
