@@ -1,19 +1,14 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Put,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { ClassroomService } from './classroom.service';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { UpdateClassroomDto } from './dto/update-classroom.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/auth-guard';
+import { Public } from '../auth/decorators/public.decorator'; 
 
 @ApiBearerAuth()
 @ApiTags('Classrooms')
+@UseGuards(JwtAuthGuard) 
 @Controller('classrooms')
 export class ClassroomController {
   constructor(private readonly classroomService: ClassroomService) {}
@@ -25,6 +20,7 @@ export class ClassroomController {
   }
 
   @Get()
+  @Public() 
   @ApiOperation({ summary: 'Lister toutes les salles' })
   async findAll() {
     return this.classroomService.findAll();
@@ -38,10 +34,7 @@ export class ClassroomController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Modifier une salle' })
-  async update(
-    @Param('id') id: string,
-    @Body() updateClassroomDto: UpdateClassroomDto,
-  ) {
+  async update(@Param('id') id: string, @Body() updateClassroomDto: UpdateClassroomDto) {
     return this.classroomService.update(+id, updateClassroomDto);
   }
 
