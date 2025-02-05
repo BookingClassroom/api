@@ -12,7 +12,7 @@ export class User {
   email: string;
 
   @Column()
-  @ApiProperty({ example: '$2b$10$encryptedpassword', description: 'Mot de passe haché' })
+  @ApiProperty({ example: '$2b$10$hashedpassword...', description: 'Mot de passe haché' })
   password: string;
 
   @Column()
