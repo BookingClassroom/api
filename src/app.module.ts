@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { ClassroomModule } from './classroom/classroom.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ClassroomModule } from './classroom/classroom.module';
       entities: [__dirname + '/**/*.entity.{ts,js}'],
     }),
     ClassroomModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
