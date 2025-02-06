@@ -16,8 +16,12 @@ export class User {
   password: string;
 
   @Column()
-  @ApiProperty({ example: 'John Doe', description: 'Nom complet' })
-  fullName: string;
+  @ApiProperty({ example: 'John', description: 'Prénom' })
+  firstname: string;
+
+  @Column()
+  @ApiProperty({ example: 'Doe', description: 'Nom' })
+  lastname: string;
 
   @Column('simple-array', { 
     nullable: true,

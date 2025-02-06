@@ -16,7 +16,7 @@ export class AuthService {
   ) {}
 
   async signup(signupDto: SignupDto): Promise<{ access_token: string }> {
-    const { email, password, fullName } = signupDto;
+    const { email, password, firstname, lastname } = signupDto;
 
     const existingUser = await this.userRepository.findOne({ where: { email } });
     if (existingUser) {
@@ -25,7 +25,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = this.userRepository.create({ email, password: hashedPassword, fullName });
+    const newUser = this.userRepository.create({ email, password: hashedPassword, firstname, lastname });
     await this.userRepository.save(newUser);
 
     return { access_token: this.jwtService.sign({ id: newUser.id, email: newUser.email }) };

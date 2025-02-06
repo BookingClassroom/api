@@ -9,6 +9,9 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiPropertyOptional({ example: 'newpassword123', description: 'Nouveau mot de passe' })
   password?: string;
 
-  @ApiPropertyOptional({ example: 'John New Doe', description: 'Nouveau nom complet' })
-  fullName?: string;
+  @ApiPropertyOptional({ example: 'John2', description: 'Nouveau prénom' })
+  firstname: string;
+
+  @ApiPropertyOptional({ example: 'Doe2', description: 'nouveau nom' })
+  lastname: string;
 }
