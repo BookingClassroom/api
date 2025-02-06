@@ -39,6 +39,6 @@ export class AuthService {
       throw new UnauthorizedException('Email ou mot de passe incorrect.');
     }
 
-    return { access_token: this.jwtService.sign({ id: user.id, email: user.email }) };
+    return { access_token: this.jwtService.sign({ id: user.id, email: user.email, roles: user.roles }) };
   }
 }

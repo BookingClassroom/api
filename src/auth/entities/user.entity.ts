@@ -18,4 +18,16 @@ export class User {
   @Column()
   @ApiProperty({ example: 'John Doe', description: 'Nom complet' })
   fullName: string;
+
+  @Column('simple-array', { 
+    nullable: true,
+    default: [] 
+  })
+  @ApiProperty({ 
+    example: ['USER'], 
+    description: 'Rôles de l\'utilisateur',
+    isArray: true,
+    required: false
+  })
+  roles: string[];
 }
