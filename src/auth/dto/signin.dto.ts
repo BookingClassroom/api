@@ -10,4 +10,12 @@ export class SigninDto {
   @IsNotEmpty()
   @MinLength(6)
   password: string;
+
+  @ApiProperty({ 
+    example: ['admin'], 
+    description: 'Rôles de l\'utilisateur',
+    isArray: true,
+    required: false
+  })
+  roles: string[];
 }

@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity('users')
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn()
   @ApiProperty({ example: 1, description: 'ID unique de l\'utilisateur' })
@@ -18,4 +18,15 @@ export class User {
   @Column()
   @ApiProperty({ example: 'John Doe', description: 'Nom complet' })
   fullName: string;
+
+  @Column('simple-array', { 
+    nullable: true,
+  })
+  @ApiProperty({ 
+    example: ['USER'], 
+    description: 'Rôles de l\'utilisateur',
+    isArray: true,
+    required: false
+  })
+  roles: string[];
 }

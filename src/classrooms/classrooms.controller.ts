@@ -1,17 +1,19 @@
 import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
-import { ClassroomService } from './classroom.service';
+import { ClassroomsService } from './classrooms.service';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { UpdateClassroomDto } from './dto/update-classroom.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/auth-guard';
+import { JwtAuthGuard } from '../auth/guard/auth.guard';
 import { Public } from '../auth/decorators/public.decorator'; 
+import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Classrooms')
-@UseGuards(JwtAuthGuard) 
 @Controller('classrooms')
-export class ClassroomController {
-  constructor(private readonly classroomService: ClassroomService) {}
+@UseGuards(JwtAuthGuard)
+export class ClassroomsController {
+  constructor(private readonly classroomService: ClassroomsService) {}
 
   @Post()
   @ApiOperation({ summary: 'Créer une salle' })
@@ -20,7 +22,7 @@ export class ClassroomController {
   }
 
   @Get()
-  @Public() 
+  @Public()
   @ApiOperation({ summary: 'Lister toutes les salles' })
   async findAll() {
     return this.classroomService.findAll();
@@ -39,6 +41,7 @@ export class ClassroomController {
   }
 
   @Delete(':id')
+  @Roles('admin')
   @ApiOperation({ summary: 'Supprimer une salle' })
   async remove(@Param('id') id: string) {
     return this.classroomService.remove(+id);
