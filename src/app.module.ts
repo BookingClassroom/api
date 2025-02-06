@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { ClassroomModule } from './classroom/classroom.module';
+import { ClassroomsModule } from './classrooms/classrooms.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 
@@ -22,7 +22,7 @@ import { UsersModule } from './users/users.module';
       synchronize: true,
       entities: [__dirname + '/**/*.entity.{ts,js}'],
     }),
-    ClassroomModule,
+    ClassroomsModule,
     AuthModule,
     UsersModule
   ],

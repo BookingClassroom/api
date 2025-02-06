@@ -6,7 +6,7 @@ import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { UpdateClassroomDto } from './dto/update-classroom.dto';
 
 @Injectable()
-export class ClassroomService {
+export class ClassroomsService {
   constructor(
     @InjectRepository(Classroom)
     private classroomRepository: Repository<Classroom>,

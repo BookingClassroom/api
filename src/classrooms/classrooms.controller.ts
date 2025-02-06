@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
-import { ClassroomService } from './classroom.service';
+import { ClassroomsService } from './classrooms.service';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { UpdateClassroomDto } from './dto/update-classroom.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -12,8 +12,8 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 @ApiTags('Classrooms')
 @Controller('classrooms')
 @UseGuards(JwtAuthGuard)
-export class ClassroomController {
-  constructor(private readonly classroomService: ClassroomService) {}
+export class ClassroomsController {
+  constructor(private readonly classroomService: ClassroomsService) {}
 
   @Post()
   @ApiOperation({ summary: 'Créer une salle' })
