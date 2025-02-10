@@ -11,4 +11,10 @@ export class UpdateClassroomDto extends PartialType(CreateClassroomDto) {
 
   @ApiPropertyOptional({ example: ['Tableau interactif', 'Sonorisation'], description: 'Équipements disponibles' })
   equipments?: string[];
+
+  @ApiPropertyOptional({ example: '09:00:00', description: 'Heure d\'ouverture de la salle' })
+  openingTime?: Date;
+
+  @ApiPropertyOptional({ example: '17:00:00', description: 'Heure de fermeture de la salle' })
+  closingTime?: Date;
 }

@@ -21,4 +21,12 @@ export class Classroom {
     description: 'Liste des équipements disponibles',
   })
   equipments: string[];
+
+  @Column({ type: 'time', nullable: true })
+  @ApiProperty({ example: '09:00:00', description: 'Heure d\'ouverture de la salle' })
+  openingTime?: Date;
+
+  @Column({ type: 'time', nullable: true })
+  @ApiProperty({ example: '17:00:00', description: 'Heure de fermeture de la salle' })
+  closingTime?: Date;
 }
