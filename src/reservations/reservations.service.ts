@@ -125,6 +125,23 @@ export class ReservationsService {
     return reservations;
   }
 
+  async findAllForOneUser(id: number): Promise<Reservation[]> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found !');
+    }
+
+    const reservations = await this.reservationRepository.find({
+      where: { user: { id } },
+      relations: ['user', 'classroom'],
+      order: {
+        startTime: 'ASC'
+      }
+    });
+  
+    return reservations;
+  }
+
   async remove(id: number): Promise<void> {
     const result = await this.reservationRepository.delete(id);
     if (result.affected === 0) {
