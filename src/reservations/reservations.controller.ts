@@ -25,6 +25,11 @@ export class ReservationsController {
   async findOne(@Param('id') id: string): Promise<Reservation> {
     return this.reservationsService.findOne(+id);
   }
+  
+  @Get('/classroom/:id')
+  async findAllForOneClassroom(@Param('id') id: string): Promise<Reservation[]> {
+    return this.reservationsService.findAllForOneClassroom(+id);
+  }
 
   @Patch(':id')
   @UsePipes(new ValidationPipe({ whitelist: true }))
