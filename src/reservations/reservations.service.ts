@@ -41,7 +41,7 @@ export class ReservationsService {
     const endMinute = endTime.getUTCMinutes();
 
     return (startHour > openingHour || (startHour === openingHour && startMinute >= openingMinute)) &&
-           (endHour < closingHour || (endHour === closingHour && endMinute <= closingMinute));
+    (endHour < closingHour || (endHour === closingHour && endMinute <= closingMinute));
   }
 
   async create(dto: CreateReservationDto): Promise<Reservation> {
@@ -108,6 +108,23 @@ export class ReservationsService {
     return reservation;
   }
 
+  async findAllForOneClassroom(id: number): Promise<Reservation[]> {
+    const classroom = await this.classroomRepository.findOne({ where: { id } });
+    if (!classroom) {
+      throw new NotFoundException('Classroom not found !');
+    }
+
+    const reservations = await this.reservationRepository.find({
+      where: { classroom: { id } },
+      relations: ['user', 'classroom'],
+      order: {
+        startTime: 'ASC'
+      }
+    });
+  
+    return reservations;
+  }
+
   async remove(id: number): Promise<void> {
     const result = await this.reservationRepository.delete(id);
     if (result.affected === 0) {
@@ -117,56 +134,65 @@ export class ReservationsService {
 
   private async validateReservation(startDate: Date, endDate: Date, classroomId: number, reservationId?: number): Promise<void> {
     const dateNow = new Date(Date.now());
-
+  
+    // Vérifie que l'heure de début et de fin ne sont pas identiques
     if (startDate.getTime() === endDate.getTime()) {
       throw new ConflictException('Start time and end time cannot be the same');
     }
-
+  
+    // Vérifie que la réservation n'est pas dans le passé
     if (startDate < dateNow || endDate < dateNow) {
       throw new ConflictException('Reservation cannot start or end before the current date and time');
     }
-
+  
+    // Vérifie que l'heure de début est avant l'heure de fin
     if (startDate >= endDate) {
       throw new ConflictException('Start time must be before end time');
     }
-
+  
+    // Vérifie que les créneaux sont bien sur des intervalles de 30 minutes
     if (!this.isValidTimeSlot(startDate) || !this.isValidTimeSlot(endDate)) {
       throw new BadRequestException('Reservations must start and end at 30-minute intervals');
     }
-
+  
+    // Vérifie que la salle existe
     const classroom = await this.classroomRepository.findOne({ where: { id: classroomId } });
     if (!classroom) throw new BadRequestException("Salle non trouvée");
-
+  
+    // Vérifie les horaires d'ouverture de la salle
     if (classroom.openingTime && classroom.closingTime) {
       if (!this.isWithinOpeningHours(startDate, endDate, classroom.openingTime.toString(), classroom.closingTime.toString())) {
         throw new BadRequestException(`La salle est ouverte de ${classroom.openingTime} à ${classroom.closingTime}`);
       }
     }
-
+  
+    // Vérifie les conflits de réservation
     const queryBuilder = this.reservationRepository.createQueryBuilder('reservation')
       .leftJoinAndSelect('reservation.user', 'user')
-      .where('reservation.classroom = :classroomId', { classroomId })
-      .andWhere('(reservation.endTime > :startDate AND reservation.startTime < :endDate) OR (reservation.startTime < :endDate AND reservation.endTime > :startDate)', {
+      .where('reservation.classroomId = :classroomId', { classroomId })
+      .andWhere('(reservation.endTime > :startDate AND reservation.startTime < :endDate)', {
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
       });
-
+  
+    // Exclut la réservation en cours de modification si un ID est fourni
     if (reservationId) {
       queryBuilder.andWhere('reservation.id != :reservationId', { reservationId });
     }
-
+  
     const existingReservations = await queryBuilder.getMany();
-
+  
+    // Si des conflits sont trouvés, prépare un message d'erreur détaillé
     if (existingReservations.length > 0) {
       const conflicts = existingReservations.map(r => ({
         period: `${this.formatTimeDisplay(r.startTime)}-${this.formatTimeDisplay(r.endTime)}`,
         user: `${r.user.firstname} ${r.user.lastname}`
       }));
-
+  
       const uniqueConflicts = Array.from(
         new Set(conflicts.map(c => `${c.period} (réservé par ${c.user})`))
       );
-
+  
       throw new ConflictException(
         `La salle est déjà réservée aux horaires suivants : ${uniqueConflicts.join('; ')}`
       );
