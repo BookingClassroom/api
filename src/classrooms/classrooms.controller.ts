@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Query } from '@nestjs/common';
 import { ClassroomsService } from './classrooms.service';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { UpdateClassroomDto } from './dto/update-classroom.dto';
@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '../auth/guard/auth.guard';
 import { Public } from '../auth/decorators/public.decorator'; 
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { FilterClassroomDto } from './dto/filter-classroom.dto';
 
 @ApiBearerAuth()
 @ApiTags('Classrooms')
@@ -27,6 +28,13 @@ export class ClassroomsController {
   async findAll() {
     return this.classroomService.findAll();
   }
+
+  @Get('filter')
+  @ApiOperation({ summary: 'Filtrer les salles' })
+  async findFiltered(@Query() filters: FilterClassroomDto) {
+    return this.classroomService.findFiltered(filters);
+  }
+
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtenir une salle par ID' })
