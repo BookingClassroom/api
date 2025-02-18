@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/entities/user.entity';
 import { Classroom } from 'src/classrooms/entities/classroom.entity';
@@ -9,11 +9,21 @@ export class Reservation {
   @ApiProperty({ example: 1, description: 'ID unique de la réservation' })
   id: number;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: false, eager: true })
+  @ManyToOne(() => User, (user) => user.id, { 
+    nullable: false, 
+    eager: true,
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn()
   @ApiProperty({ description: "Utilisateur ayant fait la réservation" })
   user: User;
 
-  @ManyToOne(() => Classroom, (classroom) => classroom.id, { nullable: false, eager: true })
+  @ManyToOne(() => Classroom, (classroom) => classroom.id, { 
+    nullable: false, 
+    eager: true,
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn()
   @ApiProperty({ description: "Salle réservée" })
   classroom: Classroom;
 
